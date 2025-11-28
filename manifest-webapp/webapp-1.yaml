@@ -1,0 +1,82 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  creationTimestamp: "2025-11-28T07:50:41Z"
+  labels:
+    kubernetes.io/metadata.name: dev
+  name: dev
+  uid: 37f5dadc-5244-484a-8d65-3625804cc4b4
+spec:
+  finalizers:
+  - kubernetes
+status:
+  phase: Active
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: "2025-11-28T07:45:03Z"
+  generation: 1
+  labels:
+    app: webapp-1
+  name: webapp-1
+  namespace: dev
+  uid: eed2955e-58b2-4918-8a92-097057944712
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: webapp-1
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: webapp-1
+    spec:
+      containers:
+      - image: docker.io/library/httpd:latest
+        imagePullPolicy: Always
+        name: httpd
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: "2025-11-28T07:45:55Z"
+  labels:
+    app: webapp-1
+  name: webapp-1
+  namespace: dev
+  uid: 99cae5b0-34f8-4f23-9160-c42fe45a0d93
+spec:
+  clusterIP: 10.96.0.0
+  clusterIPs:
+  - 10.96.0.0
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: webapp-1
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}
