@@ -9,4 +9,4 @@ configmap:
 
 image:
   name: devopsjourney1/mywebapp
-  tag: lumigo2
+  tag: latest
